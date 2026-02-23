@@ -1,0 +1,166 @@
+---
+title: "DATASCI 350 - Assignment 05: WDI 2022 Report"
+author: "Rola Ke"
+date: today
+format:
+  html:
+    toc: true
+    number-sections: true
+    theme: cosmo
+  pdf:
+    toc: true
+    number-sections: true
+jupyter: base
+bibliography: references.bib
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+```{python}
+import pandas as pd
+
+df = pd.read_csv("wdi.csv")
+
+df.shape
+```
+## Exploratory Data Analysis (EDA)
+
+In this section, we explore three indicators: **GDP per capita**, **life expectancy**, and **unemployment rate**.
+
+### Summary of missing values
+
+```{python}
+# Missing values per column (top 10)
+df.isna().sum().sort_values(ascending=False).head(10)
+```
+
+### 1) GDP per capita (gdp_per_capita)
+
+```{python}
+gdp = df["gdp_per_capita"]
+
+gdp.describe()
+```
+
+```{python}
+# Top and bottom 10 countries by GDP per capita
+df_gdp = df[["country", "gdp_per_capita"]].dropna().sort_values("gdp_per_capita", ascending=False)
+
+top10_gdp = df_gdp.head(10)
+bottom10_gdp = df_gdp.tail(10)
+
+top10_gdp, bottom10_gdp
+```
+
+**Finding:** GDP per capita varies widely across countries, with a long right tail (a few very high-income countries).
+
+### 2) Life expectancy (life_expectancy)
+
+```{python}
+life = df["life_expectancy"]
+life.describe()
+```
+
+```{python}
+# Top and bottom 10 countries by life expectancy
+df_life = df[["country", "life_expectancy"]].dropna().sort_values("life_expectancy", ascending=False)
+
+top10_life = df_life.head(10)
+bottom10_life = df_life.tail(10)
+
+top10_life, bottom10_life
+```
+
+**Finding:** Life expectancy is more concentrated than GDP per capita, but still shows large differences across countries.
+
+### 3) Unemployment rate (unemployment_rate)
+
+```{python}
+unemp = df["unemployment_rate"]
+unemp.describe()
+```
+
+```{python}
+# Top and bottom 10 countries by unemployment rate
+df_unemp = df[["country", "unemployment_rate"]].dropna().sort_values("unemployment_rate", ascending=False)
+
+top10_unemp = df_unemp.head(10)
+bottom10_unemp = df_unemp.tail(10)
+
+top10_unemp, bottom10_unemp
+```
+
+**Finding:** Unemployment rates vary across countries and may include outliers (very high unemployment).
+
+### Relationships between indicators (quick check)
+
+```{python}
+# Correlations among selected indicators (pairwise complete obs)
+df[["gdp_per_capita", "life_expectancy", "unemployment_rate"]].corr()
+```
+
+**Finding:** GDP per capita is typically positively associated with life expectancy (r > 0), while unemployment may not have a strong linear relationship with the other two.
+## Visualisations
+
+### Relationship between GDP per capita and Life Expectancy
+
+```{python}
+#| label: fig-gdp-life
+#| fig-cap: "Figure 1: Relationship between GDP per capita and life expectancy (World Bank WDI, 2022)."
+#| echo: false
+
+import matplotlib.pyplot as plt
+
+df_plot = df[["gdp_per_capita", "life_expectancy"]].dropna()
+
+plt.figure()
+plt.scatter(df_plot["gdp_per_capita"], df_plot["life_expectancy"])
+plt.xlabel("GDP per capita (USD)")
+plt.ylabel("Life Expectancy (years)")
+plt.title("GDP per Capita vs Life Expectancy (2022)")
+plt.show()
+```
+
+As shown in @fig-gdp-life, countries with higher GDP per capita tend to have higher life expectancy.
+
+---
+
+### Top 10 Countries by GDP per Capita
+
+```{python}
+#| label: fig-top-gdp
+#| fig-cap: "Figure 2: Top 10 countries by GDP per capita (World Bank WDI, 2022)."
+#| echo: false
+
+top10 = df.sort_values("gdp_per_capita", ascending=False).head(10)
+
+plt.figure()
+plt.bar(top10["country"], top10["gdp_per_capita"])
+plt.xticks(rotation=90)
+plt.xlabel("Country")
+plt.ylabel("GDP per capita (USD)")
+plt.title("Top 10 Countries by GDP per Capita (2022)")
+plt.show()
+```
+
+Figure @fig-top-gdp highlights the substantial differences among the highest-income countries.
+## Key Statistics Table
+
+Table @tbl-key-stats summarizes key descriptive statistics for the three indicators used in the EDA.
+
+```{python}
+#| label: tbl-key-stats
+#| tbl-cap: "Table 1: Key statistics for selected indicators (World Bank WDI, 2022)."
+#| echo: false
+
+stats = df[["gdp_per_capita", "life_expectancy", "unemployment_rate"]].describe().T
+stats = stats[["count", "mean", "std", "min", "25%", "50%", "75%", "max"]]
+stats
+```
+
+As shown in @tbl-key-stats, GDP per capita has the largest spread, while life expectancy is more concentrated. Figures @fig-gdp-life and @fig-top-gdp provide visual context for these patterns.
+bibliography: references.bib
+The data in this report come from the World Bank World Development Indicators (WDI) dataset [@worldbank_wdi].
+
+GDP per capita is measured as current US dollars (indicator code NY.GDP.PCAP.CD) [@worldbank_gdp].

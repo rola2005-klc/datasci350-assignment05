@@ -1,0 +1,175 @@
+---
+title: "WDI 2022 Analysis"
+author: "Rola Ke"
+date: today
+format:
+  revealjs:
+    theme: moon
+    transition: slide
+    slide-number: true
+    center: false
+    width: 1280
+    height: 720
+    margin: 0.06
+    smaller: true
+jupyter: base
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+# World Development Indicators 2022
+
+Analysis of selected macroeconomic indicators.
+
+---
+
+# Dataset
+
+- Source: World Bank World Development Indicators (WDI)
+- Year: 2022
+- 217 countries
+- 14 economic and social indicators
+
+---
+
+# Indicators Examined
+
+- GDP per capita  
+- Life expectancy  
+- Unemployment rate  
+
+These indicators capture economic performance, health outcomes, and labor market conditions.
+
+---
+
+# GDP per Capita Summary
+
+---
+title: "WDI 2022 Analysis"
+author: "Rola Ke"
+date: today
+format:
+  revealjs:
+    theme: moon
+    transition: slide
+    slide-number: true
+    center: false
+    width: 1280
+    height: 720
+    margin: 0.06
+jupyter: base
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+# World Development Indicators 2022
+
+### Data Science Analysis  
+World Bank WDI Dataset
+
+---
+
+# Dataset Overview
+
+- Source: World Bank World Development Indicators  
+- Year: 2022  
+- 217 countries  
+- 14 macroeconomic indicators  
+
+---
+
+# Indicators Examined
+
+- GDP per capita  
+- Life expectancy  
+- Unemployment rate  
+
+These capture:
+- Economic performance  
+- Health outcomes  
+- Labor market conditions  
+
+---
+
+# GDP per Capita Summary
+
+```{python}
+import pandas as pd
+df = pd.read_csv("wdi.csv")
+df["gdp_per_capita"].describe()
+```
+
+- Highly skewed distribution  
+- Large income inequality across countries  
+
+---
+
+# Life Expectancy Summary
+
+```{python}
+df["life_expectancy"].describe()
+```
+
+- More concentrated distribution  
+- Still major cross-country variation  
+
+---
+
+# GDP vs Life Expectancy
+
+```{python}
+import matplotlib.pyplot as plt
+
+df_plot = df[["gdp_per_capita", "life_expectancy"]].dropna()
+
+plt.figure()
+plt.scatter(df_plot["gdp_per_capita"], df_plot["life_expectancy"])
+plt.xlabel("GDP per capita (USD)")
+plt.ylabel("Life Expectancy (years)")
+plt.title("GDP vs Life Expectancy (2022)")
+plt.tight_layout()
+plt.show()
+```
+
+- Positive association  
+- Higher income → higher life expectancy  
+
+---
+
+# Top 10 Countries by GDP per Capita
+
+```{python}
+top10 = df.sort_values("gdp_per_capita", ascending=False).head(10)
+
+plt.figure()
+plt.barh(top10["country"], top10["gdp_per_capita"])
+plt.xlabel("GDP per capita (USD)")
+plt.title("Top 10 GDP per Capita Countries (2022)")
+plt.gca().invert_yaxis()
+plt.tight_layout()
+plt.show()
+```
+
+- Significant disparities among high-income countries  
+
+---
+
+# Key Findings
+
+- GDP per capita strongly correlates with life expectancy  
+- Extreme inequality in income distribution  
+- Labor markets vary substantially  
+
+---
+
+# Conclusion
+
+Economic development is closely linked to health outcomes.
+
+However, large disparities persist globally.
+
+---
