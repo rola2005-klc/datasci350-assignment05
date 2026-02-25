@@ -14,6 +14,8 @@ Published Slides (Revealjs)
 
 https://rola2005-klc.github.io/datasci350-assignment05/slides.html
 
+PDF is called report.pdf
+
 Project Overview
 
 This project analyzes a 2022 sample of the World Development Indicators (WDI) dataset using Quarto and Python.
